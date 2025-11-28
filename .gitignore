@@ -1,0 +1,22 @@
+#Node dependencies
+Client/magic-stream-client/node_modules/
+Client/magic-stream-client/dist/
+node_modules/
+dist/
+
+#Go build artificats
+Server/MagicStreamMoviesServer/app
+Server/MagicStreamMoviesServer/bin/
+*.exe
+*.dll
+*.out
+
+#OS Files
+.DS_Store
+.vscode/
+
+#Environment files
+Client/magic-stream-client/.env
+Server/MagicStreamMoviesServer/.env
+.env
+*.env
