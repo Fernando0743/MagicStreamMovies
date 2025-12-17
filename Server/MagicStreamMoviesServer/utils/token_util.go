@@ -93,7 +93,7 @@ JWT specification RFC5719. These fields include:
 
 // Update All tokens on db
 func UpdateAllTokens(userId, token, refreshToken string, client *mongo.Client) (err error) {
-	//Query with time out for inserting user into db
+	//Query with time out for finding user into db
 	var ctx, cancel = context.WithTimeout(context.Background(), time.Second*100)
 	defer cancel()
 
@@ -207,12 +207,12 @@ func GetRoleFromContext(c *gin.Context) (string, error) {
 	//Get user id from current context
 	role, exists := c.Get("role")
 
-	//Error when trying to fetch userId from context
+	//Error when trying to fetch role from context
 	if !exists {
 		return "", errors.New("role does not exist in this context")
 	}
 
-	//Convert user id to string
+	//Convert role to string
 	memberRole, ok := role.(string)
 
 	if !ok {
@@ -224,19 +224,24 @@ func GetRoleFromContext(c *gin.Context) (string, error) {
 
 func ValidateRefreshToken(tokenString string) (*SignedDetails, error) {
 	claims := &SignedDetails{}
+	//decode the token string and populate a SignedDetails struct with the token's claims (payload data).
+	// The anonymous function returns the secret key (SECRET_REFRESH_KEY) used to verify the token's signature.
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 
 		return []byte(SECRET_REFRESH_KEY), nil
 	})
 
+	//ERROR when parsing token
 	if err != nil {
 		return nil, err
 	}
 
+	//Check if token is using HMAC signing to prevent attacks when someone is using different signing algorithms
 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 		return nil, err
 	}
 
+	//Compares token expiration time against current time
 	if claims.ExpiresAt.Time.Before(time.Now()) {
 		return nil, errors.New("refresh token has expired")
 	}

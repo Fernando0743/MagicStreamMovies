@@ -63,6 +63,7 @@ func main() {
 	//config.AllowHeaders = []string{"Origin", "Content-Type", "Accept", "Authorization"}
 	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 	config.ExposeHeaders = []string{"Content-Length"}
+	//for tokens
 	config.AllowCredentials = true
 	config.MaxAge = 12 * time.Hour
 	router.Use(cors.New(config))

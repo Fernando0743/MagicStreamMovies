@@ -10,7 +10,7 @@ import (
 // Gin handler function used to validate incoming access tokens and grant/prohibt access to protected endpoints
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//Extract the token from the header of the HTTP request
+		//Extract the token from the http cookies
 		token, err := utils.GetAccessToken(c)
 
 		//Use Abort because if user is not authorized, we will not continue to call the targeted endpoint
